@@ -20,10 +20,16 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore dependencies
+      - name: Restore main solution dependencies
+        run: dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.slnx
+
+      - name: Build main solution
+        run: dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.slnx --no-restore
+
+      - name: Restore unit tests dependencies
         run: dotnet restore tests/unit/MinhasFinancas.Unit.Tests/MinhasFinancas.Unit.Tests.csproj
 
-      - name: Build
+      - name: Build unit tests
         run: dotnet build tests/unit/MinhasFinancas.Unit.Tests/MinhasFinancas.Unit.Tests.csproj --no-restore
 
       - name: Run unit tests
@@ -54,10 +60,16 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore dependencies
+      - name: Restore main solution dependencies
+        run: dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.slnx
+
+      - name: Build main solution
+        run: dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.slnx --no-restore
+
+      - name: Restore integration tests dependencies
         run: dotnet restore tests/integration/MinhasFinancas.Integration.Tests/MinhasFinancas.Integration.Tests.csproj
 
-      - name: Build
+      - name: Build integration tests
         run: dotnet build tests/integration/MinhasFinancas.Integration.Tests/MinhasFinancas.Integration.Tests.csproj --no-restore
 
       - name: Run integration tests
