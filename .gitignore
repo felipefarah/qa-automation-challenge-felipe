@@ -1,0 +1,25 @@
+# Código da aplicação (não deve ser commitado)
+ExameDesenvolvedorDeTestes/
+data/
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+coverage/
+*.db
+*.db-shm
+*.db-wal
+
+# Node / Playwright
+node_modules/
+tests/e2e/node_modules/
+tests/e2e/playwright-report/
+tests/e2e/test-results/
+
+# OS
+.DS_Store
+Thumbs.db
