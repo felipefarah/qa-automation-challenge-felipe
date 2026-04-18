@@ -24,26 +24,82 @@ jobs:
         run: |
           echo "=== Root directory ==="
           ls -la
-          echo "=== ExameDesenvolvedorDeTestes ==="
-          ls -la ExameDesenvolvedorDeTestes/ || echo "ExameDesenvolvedorDeTestes not found"
-          echo "=== API directory ==="
-          ls -la ExameDesenvolvedorDeTestes/api/ || echo "API directory not found"
-          echo "=== Projects ==="
-          find . -name "*.csproj" -type f || echo "No .csproj files found"
+          echo "=== Finding all .csproj files ==="
+          find . -name "*.csproj" -type f
+          echo "=== ExameDesenvolvedorDeTestes structure ==="
+          find ExameDesenvolvedorDeTestes -type f -name "*.csproj" 2>/dev/null || echo "No .csproj files in ExameDesenvolvedorDeTestes"
 
-      - name: Restore main projects dependencies
+      - name: Find and restore all main projects
         run: |
-          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj
-          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Application/MinhasFinancas.Application.csproj
-          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Infrastructure/MinhasFinancas.Infrastructure.csproj
-          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.API/MinhasFinancas.API.csproj
+          echo "Finding and restoring projects in dependency order..."
+          
+          # Domain first (no dependencies)
+          DOMAIN_PROJ=$(find . -name "MinhasFinancas.Domain.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$DOMAIN_PROJ" ]; then
+            echo "Restoring Domain: $DOMAIN_PROJ"
+            dotnet restore "$DOMAIN_PROJ"
+          else
+            echo "Domain project not found"
+          fi
+          
+          # Application (depends on Domain)
+          APP_PROJ=$(find . -name "MinhasFinancas.Application.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$APP_PROJ" ]; then
+            echo "Restoring Application: $APP_PROJ"
+            dotnet restore "$APP_PROJ"
+          else
+            echo "Application project not found"
+          fi
+          
+          # Infrastructure (depends on Domain and Application)
+          INFRA_PROJ=$(find . -name "MinhasFinancas.Infrastructure.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$INFRA_PROJ" ]; then
+            echo "Restoring Infrastructure: $INFRA_PROJ"
+            dotnet restore "$INFRA_PROJ"
+          else
+            echo "Infrastructure project not found"
+          fi
+          
+          # API (depends on all)
+          API_PROJ=$(find . -name "MinhasFinancas.API.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$API_PROJ" ]; then
+            echo "Restoring API: $API_PROJ"
+            dotnet restore "$API_PROJ"
+          else
+            echo "API project not found"
+          fi
 
-      - name: Build main projects
+      - name: Build all main projects
         run: |
-          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj --no-restore
-          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Application/MinhasFinancas.Application.csproj --no-restore
-          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Infrastructure/MinhasFinancas.Infrastructure.csproj --no-restore
-          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.API/MinhasFinancas.API.csproj --no-restore
+          echo "Building projects in dependency order..."
+          
+          # Domain first
+          DOMAIN_PROJ=$(find . -name "MinhasFinancas.Domain.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$DOMAIN_PROJ" ]; then
+            echo "Building Domain: $DOMAIN_PROJ"
+            dotnet build "$DOMAIN_PROJ" --no-restore
+          fi
+          
+          # Application
+          APP_PROJ=$(find . -name "MinhasFinancas.Application.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$APP_PROJ" ]; then
+            echo "Building Application: $APP_PROJ"
+            dotnet build "$APP_PROJ" --no-restore
+          fi
+          
+          # Infrastructure
+          INFRA_PROJ=$(find . -name "MinhasFinancas.Infrastructure.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$INFRA_PROJ" ]; then
+            echo "Building Infrastructure: $INFRA_PROJ"
+            dotnet build "$INFRA_PROJ" --no-restore
+          fi
+          
+          # API
+          API_PROJ=$(find . -name "MinhasFinancas.API.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$API_PROJ" ]; then
+            echo "Building API: $API_PROJ"
+            dotnet build "$API_PROJ" --no-restore
+          fi
 
       - name: Restore unit tests dependencies
         run: dotnet restore tests/unit/MinhasFinancas.Unit.Tests/MinhasFinancas.Unit.Tests.csproj
@@ -79,19 +135,69 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore main projects dependencies
+      - name: Find and restore all main projects
         run: |
-          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj
-          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Application/MinhasFinancas.Application.csproj
-          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Infrastructure/MinhasFinancas.Infrastructure.csproj
-          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.API/MinhasFinancas.API.csproj
+          echo "Finding and restoring projects in dependency order..."
+          
+          # Domain first (no dependencies)
+          DOMAIN_PROJ=$(find . -name "MinhasFinancas.Domain.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$DOMAIN_PROJ" ]; then
+            echo "Restoring Domain: $DOMAIN_PROJ"
+            dotnet restore "$DOMAIN_PROJ"
+          fi
+          
+          # Application (depends on Domain)
+          APP_PROJ=$(find . -name "MinhasFinancas.Application.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$APP_PROJ" ]; then
+            echo "Restoring Application: $APP_PROJ"
+            dotnet restore "$APP_PROJ"
+          fi
+          
+          # Infrastructure (depends on Domain and Application)
+          INFRA_PROJ=$(find . -name "MinhasFinancas.Infrastructure.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$INFRA_PROJ" ]; then
+            echo "Restoring Infrastructure: $INFRA_PROJ"
+            dotnet restore "$INFRA_PROJ"
+          fi
+          
+          # API (depends on all)
+          API_PROJ=$(find . -name "MinhasFinancas.API.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$API_PROJ" ]; then
+            echo "Restoring API: $API_PROJ"
+            dotnet restore "$API_PROJ"
+          fi
 
-      - name: Build main projects
+      - name: Build all main projects
         run: |
-          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj --no-restore
-          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Application/MinhasFinancas.Application.csproj --no-restore
-          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Infrastructure/MinhasFinancas.Infrastructure.csproj --no-restore
-          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.API/MinhasFinancas.API.csproj --no-restore
+          echo "Building projects in dependency order..."
+          
+          # Domain first
+          DOMAIN_PROJ=$(find . -name "MinhasFinancas.Domain.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$DOMAIN_PROJ" ]; then
+            echo "Building Domain: $DOMAIN_PROJ"
+            dotnet build "$DOMAIN_PROJ" --no-restore
+          fi
+          
+          # Application
+          APP_PROJ=$(find . -name "MinhasFinancas.Application.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$APP_PROJ" ]; then
+            echo "Building Application: $APP_PROJ"
+            dotnet build "$APP_PROJ" --no-restore
+          fi
+          
+          # Infrastructure
+          INFRA_PROJ=$(find . -name "MinhasFinancas.Infrastructure.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$INFRA_PROJ" ]; then
+            echo "Building Infrastructure: $INFRA_PROJ"
+            dotnet build "$INFRA_PROJ" --no-restore
+          fi
+          
+          # API
+          API_PROJ=$(find . -name "MinhasFinancas.API.csproj" -not -path "*/bin/*" -not -path "*/obj/*" | head -1)
+          if [ -n "$API_PROJ" ]; then
+            echo "Building API: $API_PROJ"
+            dotnet build "$API_PROJ" --no-restore
+          fi
 
       - name: Restore integration tests dependencies
         run: dotnet restore tests/integration/MinhasFinancas.Integration.Tests/MinhasFinancas.Integration.Tests.csproj
