@@ -20,6 +20,17 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
+      - name: List directory structure for debugging
+        run: |
+          echo "=== Root directory ==="
+          ls -la
+          echo "=== ExameDesenvolvedorDeTestes ==="
+          ls -la ExameDesenvolvedorDeTestes/ || echo "ExameDesenvolvedorDeTestes not found"
+          echo "=== API directory ==="
+          ls -la ExameDesenvolvedorDeTestes/api/ || echo "API directory not found"
+          echo "=== Projects ==="
+          find . -name "*.csproj" -type f || echo "No .csproj files found"
+
       - name: Restore main projects dependencies
         run: |
           dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj
