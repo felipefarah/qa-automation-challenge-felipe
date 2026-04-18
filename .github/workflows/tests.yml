@@ -20,11 +20,19 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore main solution dependencies
-        run: dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.slnx
+      - name: Restore main projects dependencies
+        run: |
+          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj
+          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Application/MinhasFinancas.Application.csproj
+          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Infrastructure/MinhasFinancas.Infrastructure.csproj
+          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.API/MinhasFinancas.API.csproj
 
-      - name: Build main solution
-        run: dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.slnx --no-restore
+      - name: Build main projects
+        run: |
+          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj --no-restore
+          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Application/MinhasFinancas.Application.csproj --no-restore
+          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Infrastructure/MinhasFinancas.Infrastructure.csproj --no-restore
+          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.API/MinhasFinancas.API.csproj --no-restore
 
       - name: Restore unit tests dependencies
         run: dotnet restore tests/unit/MinhasFinancas.Unit.Tests/MinhasFinancas.Unit.Tests.csproj
@@ -60,11 +68,19 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore main solution dependencies
-        run: dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.slnx
+      - name: Restore main projects dependencies
+        run: |
+          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj
+          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Application/MinhasFinancas.Application.csproj
+          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.Infrastructure/MinhasFinancas.Infrastructure.csproj
+          dotnet restore ExameDesenvolvedorDeTestes/api/MinhasFinancas.API/MinhasFinancas.API.csproj
 
-      - name: Build main solution
-        run: dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.slnx --no-restore
+      - name: Build main projects
+        run: |
+          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Domain/MinhasFinancas.Domain.csproj --no-restore
+          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Application/MinhasFinancas.Application.csproj --no-restore
+          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.Infrastructure/MinhasFinancas.Infrastructure.csproj --no-restore
+          dotnet build ExameDesenvolvedorDeTestes/api/MinhasFinancas.API/MinhasFinancas.API.csproj --no-restore
 
       - name: Restore integration tests dependencies
         run: dotnet restore tests/integration/MinhasFinancas.Integration.Tests/MinhasFinancas.Integration.Tests.csproj
