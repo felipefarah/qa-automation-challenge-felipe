@@ -25,7 +25,6 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "Deve criar transação de despesa e persistir no banco")]
     public async Task CreateAsync_DespesaValida_DevePersistitrNoBanco()
     {
-        // Arrange
         var pessoa = await SeedPessoaAdultaAsync();
         var categoria = await SeedCategoriaDespesaAsync();
 
@@ -39,14 +38,11 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             Data = DateTime.Today
         };
 
-        // Act
         var resultado = await _sut.CreateAsync(dto);
 
-        // Assert
         resultado.Should().NotBeNull();
         resultado.Id.Should().NotBe(Guid.Empty);
 
-        // Verificar persistência real no banco
         var transacaoNoBanco = await UnitOfWork.Transacoes.GetByIdAsync(resultado.Id);
         transacaoNoBanco.Should().NotBeNull();
         transacaoNoBanco!.Descricao.Should().Be("Compra no supermercado");
@@ -57,7 +53,7 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "Deve criar transação de receita para adulto e persistir no banco")]
     public async Task CreateAsync_ReceitaAdulto_DevePersistitrNoBanco()
     {
-        // Arrange
+        
         var pessoa = await SeedPessoaAdultaAsync("Maria Santos");
         var categoria = await SeedCategoriaReceitaAsync("Salário");
 
@@ -71,10 +67,8 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             Data = DateTime.Today
         };
 
-        // Act
         var resultado = await _sut.CreateAsync(dto);
 
-        // Assert
         resultado.Tipo.Should().Be(Transacao.ETipo.Receita);
         resultado.Valor.Should().Be(5000m);
 
@@ -85,7 +79,6 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "Deve criar transação em categoria Ambas para despesa")]
     public async Task CreateAsync_DespesaEmCategoriaAmbas_DevePersistitr()
     {
-        // Arrange
         var pessoa = await SeedPessoaAdultaAsync();
         var categoria = await SeedCategoriaAmbasAsync("Investimentos");
 
@@ -99,10 +92,8 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             Data = DateTime.Today
         };
 
-        // Act
         var resultado = await _sut.CreateAsync(dto);
 
-        // Assert
         resultado.Should().NotBeNull();
         resultado.CategoriaId.Should().Be(categoria.Id);
     }
@@ -112,7 +103,6 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "Deve rejeitar receita para menor de idade")]
     public async Task CreateAsync_ReceitaMenorDeIdade_DeveLancarExcecao()
     {
-        // Arrange
         var menor = await SeedPessoaMenorAsync();
         var categoria = await SeedCategoriaReceitaAsync();
 
@@ -126,10 +116,8 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             Data = DateTime.Today
         };
 
-        // Act
         var act = async () => await _sut.CreateAsync(dto);
 
-        // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Menores de 18 anos não podem registrar receitas.");
     }
@@ -137,7 +125,6 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "Deve rejeitar despesa em categoria de receita")]
     public async Task CreateAsync_DespesaEmCategoriaReceita_DeveLancarExcecao()
     {
-        // Arrange
         var pessoa = await SeedPessoaAdultaAsync();
         var categoriaReceita = await SeedCategoriaReceitaAsync();
 
@@ -151,10 +138,8 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             Data = DateTime.Today
         };
 
-        // Act
         var act = async () => await _sut.CreateAsync(dto);
 
-        // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Não é possível registrar despesa em categoria de receita.");
     }
@@ -162,7 +147,6 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "Deve rejeitar receita em categoria de despesa")]
     public async Task CreateAsync_ReceitaEmCategoriaDespesa_DeveLancarExcecao()
     {
-        // Arrange
         var pessoa = await SeedPessoaAdultaAsync();
         var categoriaDespesa = await SeedCategoriaDespesaAsync();
 
@@ -176,10 +160,8 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             Data = DateTime.Today
         };
 
-        // Act
         var act = async () => await _sut.CreateAsync(dto);
 
-        // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Não é possível registrar receita em categoria de despesa.");
     }
@@ -187,7 +169,6 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "Deve rejeitar transação com categoria inexistente")]
     public async Task CreateAsync_CategoriaInexistente_DeveLancarArgumentException()
     {
-        // Arrange
         var pessoa = await SeedPessoaAdultaAsync();
 
         var dto = new CreateTransacaoDto
@@ -200,10 +181,8 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             Data = DateTime.Today
         };
 
-        // Act
         var act = async () => await _sut.CreateAsync(dto);
 
-        // Assert
         await act.Should().ThrowAsync<ArgumentException>()
             .WithMessage("*Categoria não encontrada*");
     }
@@ -211,7 +190,6 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "Deve rejeitar transação com pessoa inexistente")]
     public async Task CreateAsync_PessoaInexistente_DeveLancarArgumentException()
     {
-        // Arrange
         var categoria = await SeedCategoriaDespesaAsync();
 
         var dto = new CreateTransacaoDto
@@ -224,10 +202,8 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             Data = DateTime.Today
         };
 
-        // Act
         var act = async () => await _sut.CreateAsync(dto);
 
-        // Assert
         await act.Should().ThrowAsync<ArgumentException>()
             .WithMessage("*Pessoa não encontrada*");
     }
@@ -237,7 +213,6 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
     [Fact(DisplayName = "GetAllAsync deve retornar transações paginadas")]
     public async Task GetAllAsync_ComTransacoes_DeveRetornarPaginado()
     {
-        // Arrange
         var pessoa = await SeedPessoaAdultaAsync();
         var categoria = await SeedCategoriaDespesaAsync();
 
@@ -254,14 +229,12 @@ public class TransacaoServiceIntegrationTests : IntegrationTestBase
             });
         }
 
-        // Act
         var resultado = await _sut.GetAllAsync(new MinhasFinancas.Domain.ValueObjects.PagedRequest
         {
             Page = 1,
             PageSize = 3
         });
 
-        // Assert
         resultado.Should().NotBeNull();
         resultado.Items.Should().HaveCount(3);
         resultado.TotalCount.Should().Be(5);

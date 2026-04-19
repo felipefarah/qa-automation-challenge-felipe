@@ -61,11 +61,8 @@ test.describe("Categorias — Fluxos E2E", () => {
   });
 
   test("deve exibir as categorias seed na tabela", async ({ page }) => {
-    // As categorias seed são criadas automaticamente em desenvolvimento
-    // Verificar se há pelo menos algumas categorias na tabela
     await expect(page.getByRole("cell", { name: "Alimentação", exact: true })).toBeVisible();
     
-    // Verificar se a tabela tem dados
     const rows = page.locator("tbody tr");
     await expect(rows.first()).toBeVisible();
   });

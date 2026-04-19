@@ -1,14 +1,16 @@
 import { Page, expect } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
+
 /**
  * Page Object para a página de Pessoas.
  * Encapsula todos os seletores e ações relacionados ao CRUD de pessoas.
  */
+
 export class PessoasPage extends BasePage {
   readonly url = "/pessoas";
 
-  // Seletores estáveis baseados em roles e texto
+  
   private get addButton() {
     return this.page.getByRole("button", { name: "Adicionar Pessoa" });
   }
@@ -45,7 +47,7 @@ export class PessoasPage extends BasePage {
   async abrirFormularioCadastro(): Promise<void> {
     await this.addButton.click();
     await expect(this.dialog).toBeVisible();
-    // Aguardar um pouco para garantir que o formulário carregou completamente
+    
     await this.page.waitForTimeout(500);
   }
 
@@ -54,13 +56,13 @@ export class PessoasPage extends BasePage {
   }
 
   async preencherDataNascimento(data: string): Promise<void> {
-    // data no formato YYYY-MM-DD
+    
     await this.dataNascimentoInput.fill(data);
   }
 
   async salvar(): Promise<void> {
     await this.saveButton.click();
-    // Aguardar o dialog fechar ou uma mensagem aparecer
+   
     await this.page.waitForTimeout(1000);
   }
 
@@ -76,26 +78,26 @@ export class PessoasPage extends BasePage {
   }
 
   async verificarPessoaNaTabela(nome: string): Promise<void> {
-    // Aguardar a tabela carregar
+   
     await this.waitForTableLoad();
     
-    // Primeiro tentar uma busca simples na página atual
+    
     try {
       const element = this.page.getByRole("cell", { name: nome });
       await element.waitFor({ state: "visible", timeout: 3000 });
       return;
     } catch {
-      // Se não encontrou, fazer uma busca mais ampla
+     
       try {
-        // Verificar se existe paginação
+       
         const paginationExists = await this.page.getByRole("button", { name: /próximo/i }).isVisible();
         
         if (!paginationExists) {
-          // Sem paginação, elemento realmente não existe
+          
           throw new Error(`Pessoa "${nome}" não encontrada na tabela`);
         }
         
-        // Com paginação, tentar buscar
+       
         await this.findInPaginatedTable(
           () => this.page.getByRole("cell", { name: nome }),
           `Pessoa "${nome}"`,
@@ -103,14 +105,12 @@ export class PessoasPage extends BasePage {
           true
         );
       } catch (error) {
-        // Como último recurso, verificar se a pessoa foi criada mas com nome ligeiramente diferente
         const allCells = this.page.locator('table td');
         const cellCount = await allCells.count();
         
         for (let i = 0; i < Math.min(cellCount, 50); i++) {
           const cellText = await allCells.nth(i).textContent();
           if (cellText && cellText.includes(nome.substring(0, 5))) {
-            // Encontrou algo similar, considerar sucesso
             return;
           }
         }
@@ -133,11 +133,9 @@ export class PessoasPage extends BasePage {
   }
 
   async clicarDeletarPessoa(nome: string): Promise<void> {
-    // Primeiro tentar na página atual
     let row = this.page.getByRole("row").filter({ hasText: nome });
     
     if (!(await row.first().isVisible({ timeout: 2000 }))) {
-      // Se não encontrou, navegar pelas páginas
       const nextButton = this.page.getByRole("button", { name: /próximo/i });
       
       while (await nextButton.isVisible() && await nextButton.isEnabled()) {
@@ -151,7 +149,6 @@ export class PessoasPage extends BasePage {
       }
     }
     
-    // Clicar no botão deletar
     await row.first().getByRole("button", { name: /deletar|excluir/i }).click();
   }
 

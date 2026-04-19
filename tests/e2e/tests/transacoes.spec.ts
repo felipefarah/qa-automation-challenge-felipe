@@ -21,7 +21,6 @@ test.describe("Transações — Fluxos E2E", () => {
   });
 
   test("deve exibir as transações seed na tabela", async ({ page }) => {
-    // Transações seed criadas automaticamente em desenvolvimento
     await expect(page.getByRole("cell", { name: "Compra no supermercado" })).toBeVisible();
     await expect(page.getByRole("cell", { name: "Salário mensal" })).toBeVisible();
   });
@@ -40,7 +39,6 @@ test.describe("Transações — Fluxos E2E", () => {
     await transacoesPage.abrirFormularioCadastro();
     await transacoesPage.salvar();
 
-    // Verificar mensagens de validação (usando as mensagens reais da aplicação)
     await expect(page.getByText("Descrição é obrigatória")).toBeVisible();
     await expect(page.getByText("Invalid input: expected number, received NaN")).toBeVisible();
   });
@@ -50,20 +48,16 @@ test.describe("Transações — Fluxos E2E", () => {
   test("deve exibir aviso quando pessoa menor de idade é selecionada", async ({ page }) => {
     await transacoesPage.abrirFormularioCadastro();
 
-    // Selecionar uma pessoa menor de idade (usando uma das pessoas disponíveis)
     await transacoesPage.selecionarPessoa("1234");
 
-    // Verificar aviso de menor de idade
     await transacoesPage.verificarAvisoMenorDeIdade();
   });
 
   test("deve desabilitar opção Receita para menor de idade", async ({ page }) => {
     await transacoesPage.abrirFormularioCadastro();
 
-    // Selecionar uma pessoa menor de idade (usando uma das pessoas disponíveis)
     await transacoesPage.selecionarPessoa("1234");
 
-    // Verificar que Receita está desabilitada no select de tipo
     await transacoesPage.verificarTipoReceitaDesabilitado();
   });
 
@@ -71,7 +65,6 @@ test.describe("Transações — Fluxos E2E", () => {
     await transacoesPage.abrirFormularioCadastro();
     await transacoesPage.selecionarPessoa("1234");
 
-    // Tipo Despesa deve estar disponível
     const despesaOption = page.getByRole("option", { name: "Despesa" });
     await expect(despesaOption).not.toBeDisabled();
   });
@@ -91,20 +84,16 @@ test.describe("Transações — Fluxos E2E", () => {
     const toast = await transacoesPage.waitForSuccessToast();
     expect(toast).toContain("sucesso");
 
-    // Aguardar um pouco para a transação ser salva
     await page.waitForTimeout(2000);
     
-    // Verificar na tabela de forma simples
     await transacoesPage.verificarTransacaoNaTabela("Compra de teste E2E");
   });
 
   test("deve verificar se dashboard atualiza após criar transação", async ({ page }) => {
-    // Primeiro ir ao dashboard e capturar valores iniciais
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(2000);
     
-    // Tentar capturar valores iniciais do dashboard (se existirem)
     let initialValues: string[] = [];
     try {
       const valueElements = page.locator('[class*="value"], [class*="amount"], [class*="total"]');
@@ -114,10 +103,8 @@ test.describe("Transações — Fluxos E2E", () => {
         if (text) initialValues.push(text);
       }
     } catch {
-      // Se não conseguir capturar valores, continuar o teste
     }
     
-    // Ir para transações e criar uma nova
     await transacoesPage.goto();
     await transacoesPage.abrirFormularioCadastro();
     await transacoesPage.preencherDescricao("Teste Dashboard Update");
@@ -131,16 +118,13 @@ test.describe("Transações — Fluxos E2E", () => {
     const toast = await transacoesPage.waitForSuccessToast();
     expect(toast).toContain("sucesso");
     
-    // Voltar ao dashboard
     await page.goto("/");
     await page.waitForLoadState("networkidle");
-    await page.waitForTimeout(3000); // Aguardar mais tempo para atualização
+    await page.waitForTimeout(3000); 
     
-    // Verificar se a página carregou sem erros
     await expect(page.locator("body")).not.toContainText("404");
     await expect(page.locator("body")).not.toContainText("Error");
     
-    // Se conseguiu capturar valores iniciais, verificar se mudaram
     if (initialValues.length > 0) {
       let valuesChanged = false;
       try {
@@ -154,11 +138,9 @@ test.describe("Transações — Fluxos E2E", () => {
           }
         }
       } catch {
-        // Se não conseguir verificar, considerar que o dashboard está funcionando
         valuesChanged = true;
       }
       
-      // Pelo menos verificar que o dashboard não está quebrado
       expect(valuesChanged || true).toBe(true);
     }
   });

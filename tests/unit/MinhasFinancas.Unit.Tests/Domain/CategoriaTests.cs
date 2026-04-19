@@ -16,26 +16,20 @@ public class CategoriaTests
     [Fact(DisplayName = "Categoria Despesa deve permitir transação do tipo Despesa")]
     public void PermiteTipo_CategoriaDespesa_ComTipoDespesa_DeveRetornarTrue()
     {
-        // Arrange
         var categoria = EntityFactory.CriarCategoriaDespesa();
 
-        // Act
         var resultado = categoria.PermiteTipo(Transacao.ETipo.Despesa);
 
-        // Assert
         resultado.Should().BeTrue();
     }
 
     [Fact(DisplayName = "Categoria Despesa não deve permitir transação do tipo Receita")]
     public void PermiteTipo_CategoriaDespesa_ComTipoReceita_DeveRetornarFalse()
     {
-        // Arrange
         var categoria = EntityFactory.CriarCategoriaDespesa();
 
-        // Act
         var resultado = categoria.PermiteTipo(Transacao.ETipo.Receita);
 
-        // Assert
         resultado.Should().BeFalse();
     }
 
@@ -44,26 +38,20 @@ public class CategoriaTests
     [Fact(DisplayName = "Categoria Receita deve permitir transação do tipo Receita")]
     public void PermiteTipo_CategoriaReceita_ComTipoReceita_DeveRetornarTrue()
     {
-        // Arrange
         var categoria = EntityFactory.CriarCategoriaReceita();
 
-        // Act
         var resultado = categoria.PermiteTipo(Transacao.ETipo.Receita);
 
-        // Assert
         resultado.Should().BeTrue();
     }
 
     [Fact(DisplayName = "Categoria Receita não deve permitir transação do tipo Despesa")]
     public void PermiteTipo_CategoriaReceita_ComTipoDespesa_DeveRetornarFalse()
     {
-        // Arrange
         var categoria = EntityFactory.CriarCategoriaReceita();
 
-        // Act
         var resultado = categoria.PermiteTipo(Transacao.ETipo.Despesa);
 
-        // Assert
         resultado.Should().BeFalse();
     }
 
@@ -72,26 +60,22 @@ public class CategoriaTests
     [Fact(DisplayName = "Categoria Ambas deve permitir transação do tipo Despesa")]
     public void PermiteTipo_CategoriaAmbas_ComTipoDespesa_DeveRetornarTrue()
     {
-        // Arrange
         var categoria = EntityFactory.CriarCategoriaAmbas();
 
-        // Act
         var resultado = categoria.PermiteTipo(Transacao.ETipo.Despesa);
 
-        // Assert
+        
         resultado.Should().BeTrue();
     }
 
     [Fact(DisplayName = "Categoria Ambas deve permitir transação do tipo Receita")]
     public void PermiteTipo_CategoriaAmbas_ComTipoReceita_DeveRetornarTrue()
     {
-        // Arrange
         var categoria = EntityFactory.CriarCategoriaAmbas();
 
-        // Act
         var resultado = categoria.PermiteTipo(Transacao.ETipo.Receita);
 
-        // Assert
+        
         resultado.Should().BeTrue();
     }
 
@@ -109,13 +93,10 @@ public class CategoriaTests
         Transacao.ETipo tipo,
         bool esperado)
     {
-        // Arrange
         var categoria = new Categoria { Descricao = "Teste", Finalidade = finalidade };
 
-        // Act
         var resultado = categoria.PermiteTipo(tipo);
 
-        // Assert
         resultado.Should().Be(esperado);
     }
 
@@ -124,10 +105,8 @@ public class CategoriaTests
     [Fact(DisplayName = "Categoria deve ter ID gerado automaticamente ao ser criada")]
     public void Categoria_AoCriar_DeveGerarIdAutomaticamente()
     {
-        // Arrange & Act
         var categoria = EntityFactory.CriarCategoriaDespesa();
 
-        // Assert
         categoria.Id.Should().NotBe(Guid.Empty);
     }
 }

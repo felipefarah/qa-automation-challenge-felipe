@@ -20,11 +20,9 @@ test.describe("Pessoas — Fluxos E2E", () => {
 
     await pessoasPage.cadastrarPessoa(nome, "1990-05-15");
 
-    // Verificar toast de sucesso
     const toast = await pessoasPage.waitForSuccessToast();
     expect(toast).toContain("sucesso");
 
-    // Verificar na tabela
     await pessoasPage.verificarPessoaNaTabela(nome);
   });
 
@@ -41,10 +39,8 @@ test.describe("Pessoas — Fluxos E2E", () => {
     await pessoasPage.preencherNome("Pessoa Sem Data");
     await pessoasPage.salvar();
 
-    // Aguardar um pouco para ver se há validação
     await page.waitForTimeout(1000);
 
-    // Verificar se há alguma mensagem de erro relacionada à data
     const errorMessages = [
       "Data de nascimento é obrigatória",
       "Data é obrigatória", 
@@ -61,25 +57,21 @@ test.describe("Pessoas — Fluxos E2E", () => {
         errorFound = true;
         break;
       } catch {
-        // Continuar tentando outras mensagens
       }
     }
     
-    // Se não encontrou mensagem de erro, verificar se o formulário ainda está aberto
     if (!errorFound) {
       try {
         await expect(page.getByRole("dialog")).toBeVisible({ timeout: 1000 });
-        errorFound = true; // Formulário aberto indica erro de validação
+        errorFound = true; 
       } catch {
-        // Se o formulário fechou, pode ser que a validação seja no backend
-        // Vamos verificar se a pessoa foi realmente criada (não deveria ter sido)
+        
         const pessoaSemData = page.getByRole("cell", { name: "Pessoa Sem Data" });
         await expect(pessoaSemData).not.toBeVisible({ timeout: 2000 });
-        errorFound = true; // Se não foi criada, a validação funcionou
+        errorFound = true; 
       }
     }
     
-    // Se chegou aqui e não encontrou nenhuma evidência de validação, falhar o teste
     if (!errorFound) {
       throw new Error("Nenhuma validação de data de nascimento foi detectada");
     }
@@ -98,14 +90,12 @@ test.describe("Pessoas — Fluxos E2E", () => {
     const nomeOriginal = `Editar Teste ${Date.now()}`;
     const nomeAtualizado = `Editado ${Date.now()}`;
 
-    // Cadastrar primeiro
+    
     await pessoasPage.cadastrarPessoa(nomeOriginal, "1985-03-20");
     await pessoasPage.waitForSuccessToast();
     
-    // Aguardar um pouco para garantir que a pessoa foi salva e está na tabela
     await page.waitForTimeout(2000);
 
-    // Editar
     await pessoasPage.clicarEditarPessoa(nomeOriginal);
     await pessoasPage.preencherNome(nomeAtualizado);
     await pessoasPage.salvar();
@@ -119,18 +109,14 @@ test.describe("Pessoas — Fluxos E2E", () => {
   test("deve deletar uma pessoa após confirmação", async ({ page }) => {
     const nome = `Deletar Teste ${Date.now()}`;
 
-    // Cadastrar pessoa
     await pessoasPage.cadastrarPessoa(nome, "1992-07-10");
     await pessoasPage.waitForSuccessToast();
     
-    // Aguardar brevemente
     await page.waitForTimeout(2000);
 
-    // Tentar deletar diretamente sem verificações complexas
     await pessoasPage.clicarDeletarPessoa(nome);
     await pessoasPage.confirmarDelecao();
 
-    // Verificar que foi deletada com timeout curto
     await expect(page.getByRole("cell", { name: nome })).not.toBeVisible({ timeout: 5000 });
   });
 

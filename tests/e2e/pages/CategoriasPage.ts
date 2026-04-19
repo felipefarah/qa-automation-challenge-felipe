@@ -1,6 +1,7 @@
 import { Page, expect } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
+
 /**
  * Page Object para a página de Categorias.
  */
@@ -39,7 +40,6 @@ export class CategoriasPage extends BasePage {
   async abrirFormularioCadastro(): Promise<void> {
     await this.addButton.click();
     await expect(this.dialog).toBeVisible();
-    // Aguardar um pouco para garantir que o formulário carregou completamente
     await this.page.waitForTimeout(500);
   }
 
@@ -53,7 +53,6 @@ export class CategoriasPage extends BasePage {
 
   async salvar(): Promise<void> {
     await this.saveButton.click();
-    // Aguardar o dialog fechar ou uma mensagem aparecer
     await this.page.waitForTimeout(1000);
   }
 
@@ -68,26 +67,26 @@ export class CategoriasPage extends BasePage {
   }
 
   async verificarCategoriaNaTabela(descricao: string): Promise<void> {
-    // Aguardar a tabela carregar
+   
     await this.waitForTableLoad();
     
-    // Primeiro tentar uma busca simples na página atual
+
     try {
       const element = this.page.getByRole("cell", { name: descricao });
       await element.waitFor({ state: "visible", timeout: 3000 });
       return;
     } catch {
-      // Se não encontrou, fazer uma busca mais ampla
+      
       try {
-        // Verificar se existe paginação
+        
         const paginationExists = await this.page.getByRole("button", { name: /próximo/i }).isVisible();
         
         if (!paginationExists) {
-          // Sem paginação, elemento realmente não existe
+       
           throw new Error(`Categoria "${descricao}" não encontrada na tabela`);
         }
         
-        // Com paginação, tentar buscar
+        
         await this.findInPaginatedTable(
           () => this.page.getByRole("cell", { name: descricao }),
           `Categoria "${descricao}"`,
@@ -95,14 +94,14 @@ export class CategoriasPage extends BasePage {
           true
         );
       } catch (error) {
-        // Como último recurso, verificar se a categoria foi criada mas com nome ligeiramente diferente
+        
         const allCells = this.page.locator('table td');
         const cellCount = await allCells.count();
         
         for (let i = 0; i < Math.min(cellCount, 50); i++) {
           const cellText = await allCells.nth(i).textContent();
           if (cellText && cellText.includes(descricao.substring(0, 5))) {
-            // Encontrou algo similar, considerar sucesso
+           
             return;
           }
         }

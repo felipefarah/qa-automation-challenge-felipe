@@ -26,10 +26,8 @@ public class TransacoesApiTests : IClassFixture<ApiWebApplicationFactory>
     [Fact(DisplayName = "GET /transacoes deve retornar 200 OK com lista paginada")]
     public async Task GetAll_DeveRetornar200ComListaPaginada()
     {
-        // Act
         var response = await _client.GetAsync("/api/v1.0/transacoes");
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var content = await response.Content.ReadAsStringAsync();
@@ -43,10 +41,8 @@ public class TransacoesApiTests : IClassFixture<ApiWebApplicationFactory>
     [Fact(DisplayName = "GET /transacoes/{id} deve retornar 404 para ID inexistente")]
     public async Task GetById_IdInexistente_DeveRetornar404()
     {
-        // Act
         var response = await _client.GetAsync($"/api/v1.0/transacoes/{Guid.NewGuid()}");
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -55,17 +51,14 @@ public class TransacoesApiTests : IClassFixture<ApiWebApplicationFactory>
     [Fact(DisplayName = "POST /transacoes deve retornar 400 quando body está vazio")]
     public async Task Create_BodyVazio_DeveRetornar400()
     {
-        // Act
         var response = await _client.PostAsJsonAsync("/api/v1.0/transacoes", new { });
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact(DisplayName = "POST /transacoes deve retornar 400 quando categoria não existe")]
     public async Task Create_CategoriaInexistente_DeveRetornar400()
     {
-        // Arrange — criar pessoa válida primeiro
         var pessoaPayload = new { Nome = "Teste API", DataNascimento = "1990-01-01T00:00:00" };
         var pessoaResponse = await _client.PostAsJsonAsync("/api/v1.0/pessoas", pessoaPayload);
         pessoaResponse.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -76,23 +69,20 @@ public class TransacoesApiTests : IClassFixture<ApiWebApplicationFactory>
         {
             Descricao = "Teste",
             Valor = 100.0,
-            Tipo = 0, // Despesa
+            Tipo = 0, 
             CategoriaId = Guid.NewGuid().ToString(),
             PessoaId = pessoaId,
             Data = DateTime.Today.ToString("o")
         };
 
-        // Act
         var response = await _client.PostAsJsonAsync("/api/v1.0/transacoes", payload);
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact(DisplayName = "POST /transacoes deve retornar 400 quando pessoa não existe")]
     public async Task Create_PessoaInexistente_DeveRetornar400()
     {
-        // Arrange — criar categoria válida primeiro
         var categoriaPayload = new { Descricao = "Alimentação API", Finalidade = 0 }; // Despesa
         var categoriaResponse = await _client.PostAsJsonAsync("/api/v1.0/categorias", categoriaPayload);
         categoriaResponse.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -103,23 +93,20 @@ public class TransacoesApiTests : IClassFixture<ApiWebApplicationFactory>
         {
             Descricao = "Teste",
             Valor = 100.0,
-            Tipo = 0, // Despesa
+            Tipo = 0, 
             CategoriaId = categoriaId,
             PessoaId = Guid.NewGuid().ToString(),
             Data = DateTime.Today.ToString("o")
         };
 
-        // Act
         var response = await _client.PostAsJsonAsync("/api/v1.0/transacoes", payload);
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact(DisplayName = "POST /transacoes deve criar transação válida e retornar 201")]
     public async Task Create_TransacaoValida_DeveRetornar201()
     {
-        // Arrange — criar pessoa e categoria
         var pessoaPayload = new { Nome = "Pessoa Transacao", DataNascimento = "1990-06-15T00:00:00" };
         var pessoaResp = await _client.PostAsJsonAsync("/api/v1.0/pessoas", pessoaPayload);
         var pessoaId = JsonDocument.Parse(await pessoaResp.Content.ReadAsStringAsync())
@@ -134,16 +121,14 @@ public class TransacoesApiTests : IClassFixture<ApiWebApplicationFactory>
         {
             Descricao = "Compra no mercado",
             Valor = 150.75,
-            Tipo = 0, // Despesa
+            Tipo = 0, 
             CategoriaId = categoriaId,
             PessoaId = pessoaId,
             Data = DateTime.Today.ToString("o")
         };
 
-        // Act
         var response = await _client.PostAsJsonAsync("/api/v1.0/transacoes", payload);
 
-        // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;

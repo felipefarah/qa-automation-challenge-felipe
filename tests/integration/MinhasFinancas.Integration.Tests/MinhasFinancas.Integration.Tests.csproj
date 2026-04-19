@@ -32,8 +32,6 @@
     <ProjectReference Include="..\..\..\ExameDesenvolvedorDeTestes\api\MinhasFinancas.Infrastructure\MinhasFinancas.Infrastructure.csproj" />
   </ItemGroup>
 
-  <!-- Copia o XML de documentação da API para o output dos testes.
-       O Program.cs usa IncludeXmlComments que exige o arquivo no mesmo diretório do assembly. -->
   <Target Name="CopyApiXmlDoc" AfterTargets="Build">
     <Copy
       SourceFiles="..\..\..\ExameDesenvolvedorDeTestes\api\MinhasFinancas.API\bin\$(Configuration)\net9.0\MinhasFinancas.API.xml"

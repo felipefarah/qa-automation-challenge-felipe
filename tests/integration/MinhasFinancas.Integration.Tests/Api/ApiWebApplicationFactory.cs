@@ -25,7 +25,6 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
-            // Remove all EF Core related services to avoid conflicts
             var descriptorsToRemove = services
                 .Where(d => d.ServiceType.Namespace?.StartsWith("Microsoft.EntityFrameworkCore") == true ||
                            d.ServiceType == typeof(MinhasFinancasDbContext) ||
@@ -37,7 +36,6 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
                 services.Remove(descriptor);
             }
 
-            // Add fresh DbContext with InMemory database - use same database name for all requests in this factory instance
             services.AddDbContext<MinhasFinancasDbContext>(options =>
             {
                 options.UseInMemoryDatabase(_databaseName);

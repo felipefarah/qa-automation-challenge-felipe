@@ -8,7 +8,6 @@ test.describe("Navegação — Fluxos E2E", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Verificar que a aplicação carregou (sidebar ou header visível)
     await expect(page.locator("nav, aside, header").first()).toBeVisible();
   });
 
@@ -16,7 +15,6 @@ test.describe("Navegação — Fluxos E2E", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     
-    // Usar seletor específico da sidebar para evitar ambiguidade
     await page.locator("aside").getByRole("link", { name: /pessoas/i }).click();
     await expect(page).toHaveURL(/\/pessoas/);
     await expect(page.getByRole("heading", { name: "Pessoas" })).toBeVisible();
@@ -26,7 +24,6 @@ test.describe("Navegação — Fluxos E2E", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     
-    // Usar seletor específico da sidebar para evitar ambiguidade
     await page.locator("aside").getByRole("link", { name: /categorias/i }).click();
     await expect(page).toHaveURL(/\/categorias/);
     await expect(page.getByRole("heading", { name: "Categorias" })).toBeVisible();
@@ -36,7 +33,6 @@ test.describe("Navegação — Fluxos E2E", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     
-    // Usar seletor específico da sidebar para evitar ambiguidade
     await page.locator("aside").getByRole("link", { name: /transações/i }).click();
     await expect(page).toHaveURL(/\/transacoes/);
     await expect(page.getByRole("heading", { name: "Transações" })).toBeVisible();
@@ -46,15 +42,12 @@ test.describe("Navegação — Fluxos E2E", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     
-    // Usar seletor específico da sidebar para evitar ambiguidade
     await page.locator("aside").getByRole("link", { name: /dashboard/i }).click();
     await expect(page).toHaveURL("/");
     
-    // Verificar se há elementos do dashboard (cards de resumo, gráficos, etc.)
-    // Aguardar um pouco para os dados carregarem
+    
     await page.waitForTimeout(2000);
     
-    // Verificar se existem elementos típicos de dashboard
     const dashboardElements = [
       page.getByText(/total/i),
       page.getByText(/receitas/i),
@@ -63,7 +56,6 @@ test.describe("Navegação — Fluxos E2E", () => {
       page.locator('[data-testid*="dashboard"], [class*="dashboard"], [class*="card"], [class*="summary"]')
     ];
     
-    // Pelo menos um elemento do dashboard deve estar visível
     let dashboardFound = false;
     for (const element of dashboardElements) {
       try {
@@ -71,11 +63,9 @@ test.describe("Navegação — Fluxos E2E", () => {
         dashboardFound = true;
         break;
       } catch {
-        // Continuar tentando outros elementos
       }
     }
     
-    // Se não encontrou elementos específicos, pelo menos verificar que não está em uma página de erro
     if (!dashboardFound) {
       await expect(page.locator("body")).not.toContainText("404");
       await expect(page.locator("body")).not.toContainText("Error");
@@ -86,7 +76,6 @@ test.describe("Navegação — Fluxos E2E", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
     
-    // Usar seletor específico da sidebar para evitar ambiguidade
     await page.locator("aside").getByRole("link", { name: /totais|relatórios/i }).click();
     await expect(page).toHaveURL(/\/totais/);
   });
