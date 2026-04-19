@@ -197,17 +197,17 @@ BASE_URL=http://localhost:5173 npm test
 | Regra | Unitário | Integração | E2E |
 |-------|----------|------------|-----|
 | Menor de 18 anos não pode ter receita | ✅ | ✅ | ✅ |
-| Categoria Despesa só aceita Despesa | ✅ | ✅ | — |
-| Categoria Receita só aceita Receita | ✅ | ✅ | — |
-| Categoria Ambas aceita qualquer tipo | ✅ | ✅ | — |
-| Pessoa com exatamente 18 anos pode ter receita | ✅ | — | — |
-| Cascade delete: pessoa remove transações | — | ✅ | — |
-| Data de nascimento não pode ser futura | ✅ | ✅ | — |
-| Transação com categoria/pessoa inexistente retorna erro | ✅ | ✅ | — |
-| Cadastro de pessoa via UI | — | — | ✅ |
-| Cadastro de categoria via UI | — | — | ✅ |
-| Criação de transação via UI | — | — | ✅ |
-| Aviso de menor de idade na UI | — | — | ✅ |
+| Categoria Despesa só aceita Despesa | ✅ | ✅ | - |
+| Categoria Receita só aceita Receita | ✅ | ✅ | - |
+| Categoria Ambas aceita qualquer tipo | ✅ | ✅ | - |
+| Pessoa com exatamente 18 anos pode ter receita | ✅ | - | - |
+| Cascade delete: pessoa remove transações | - | ✅ | - |
+| Data de nascimento não pode ser futura | ✅ | ✅ | - |
+| Transação com categoria/pessoa inexistente retorna erro | ✅ | ✅ | - |
+| Cadastro de pessoa via UI | - | - | ✅ |
+| Cadastro de categoria via UI | - | - | ✅ |
+| Criação de transação via UI | - | - | ✅ |
+| Aviso de menor de idade na UI | - | - | ✅ |
 
 ---
 
